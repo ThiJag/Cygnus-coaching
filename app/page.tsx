@@ -1,65 +1,328 @@
-import Image from "next/image";
+import Link from "next/link";
+import { groq } from "next-sanity";
+import { sanityFetch } from "../sanity/lib/live";
 
-export default function Home() {
+type ServiceCard = {
+  _id: string;
+  name: string;
+  slug: { current: string };
+  description?: string;
+};
+
+type Testimonial = {
+  _id: string;
+  firstName: string;
+  role?: string;
+  category?: string;
+  text: string;
+};
+
+const homePageQuery = groq`*[_type=="page" && slug.current=="home"][0]{ title, content }`;
+
+const servicesQuery = groq`*[_type=="service"] | order(name asc) {
+  _id,
+  name,
+  slug,
+  description
+}`;
+
+const testimonialsQuery = groq`*[_type=="testimonial"] | order(_createdAt desc) [0..2] {
+  _id,
+  firstName,
+  role,
+  category,
+  text
+}`;
+
+export default async function HomePage() {
+  const [{ data: home }, { data: services }, { data: testimonials }] =
+    await Promise.all([
+      sanityFetch({ query: homePageQuery }),
+      sanityFetch({ query: servicesQuery }),
+      sanityFetch({ query: testimonialsQuery }),
+    ]);
+
+  const heroTitle = home?.title ?? "Rust. Richting. Resultaat.";
+  const heroLead =
+    "Cygnus Coaching BV in Genk begeleidt professionals en leidinggevenden met warmte, helderheid en structuur—van stress & burn-out tot loopbaan- en leiderschapscoaching.";
+
+  const serviceCards =
+    (services as ServiceCard[] | null | undefined)?.slice(0, 3) ?? [];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex flex-col bg-[#F9F7F4]">
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(60rem_30rem_at_20%_10%,rgba(201,169,110,0.22),transparent_60%),radial-gradient(55rem_28rem_at_80%_30%,rgba(27,58,92,0.18),transparent_60%)]" />
+        <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-20">
+          <div className="flex flex-col justify-center">
+            <p className="inline-flex w-fit items-center gap-2 rounded-full border border-[#1B3A5C]/15 bg-white/50 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#1B3A5C]/80 backdrop-blur">
+              Cygnus Coaching BV · Genk
+              <span className="h-1 w-1 rounded-full bg-[#C9A96E]" />
+              Rike Weltjens
+            </p>
+
+            <h1 className="mt-6 font-serif text-4xl leading-tight tracking-tight text-[#1B3A5C] sm:text-5xl">
+              {heroTitle}
+            </h1>
+
+            <p className="mt-5 max-w-xl text-base leading-7 text-[#1B3A5C]/75 sm:text-lg sm:leading-8">
+              {heroLead}
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center rounded-full bg-[#1B3A5C] px-6 py-3 text-sm font-semibold text-[#F9F7F4] shadow-sm shadow-[#1B3A5C]/20 transition hover:bg-[#16314D] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A96E]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F9F7F4]"
+              >
+                Plan een kennismaking
+              </Link>
+
+              <Link
+                href="/aanpak"
+                className="inline-flex items-center justify-center rounded-full border border-[#1B3A5C]/20 bg-white/60 px-6 py-3 text-sm font-semibold text-[#1B3A5C] transition hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A96E]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F9F7F4]"
+              >
+                Bekijk mijn aanpak
+              </Link>
+            </div>
+
+            <div className="mt-10 grid grid-cols-2 gap-3 text-sm text-[#1B3A5C]/70 sm:grid-cols-3">
+              {[
+                "Integriteit",
+                "Vertrouwen",
+                "Respect",
+                "Passie",
+                "Engagement",
+                "Kwaliteit",
+              ].map((k) => (
+                <div
+                  key={k}
+                  className="rounded-xl border border-[#1B3A5C]/10 bg-white/50 px-4 py-3 backdrop-blur"
+                >
+                  <span className="font-semibold text-[#1B3A5C]">·</span> {k}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="absolute -inset-4 rounded-[2rem] bg-[linear-gradient(135deg,rgba(201,169,110,0.35),rgba(27,58,92,0.25))] blur-2xl" />
+            <div className="relative overflow-hidden rounded-[2rem] border border-[#1B3A5C]/10 bg-white shadow-2xl shadow-[#1B3A5C]/10">
+              <div className="aspect-[4/5] w-full bg-[linear-gradient(180deg,rgba(27,58,92,0.06),rgba(201,169,110,0.10))]">
+                <div className="flex h-full items-center justify-center px-10 text-center">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-[#1B3A5C]/55">
+                      Hero foto
+                    </p>
+                    <p className="mt-2 font-serif text-2xl text-[#1B3A5C]">
+                      Rustige, warme professionele uitstraling
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-[#1B3A5C]/70">
+                      Vervang door een echte foto via Sanity of{" "}
+                      <code className="rounded bg-[#1B3A5C]/10 px-1">public/</code>.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-[#1B3A5C]/10 bg-[#F9F7F4] px-6 py-5">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#1B3A5C]/55">
+                  Erkend / partners
+                </p>
+                <div className="mt-3 grid grid-cols-3 gap-3">
+                  {["Loopbaancheque", "CERTO", "WSE"].map((l) => (
+                    <div
+                      key={l}
+                      className="flex items-center justify-center rounded-xl border border-[#1B3A5C]/10 bg-white px-3 py-3 text-xs font-semibold text-[#1B3A5C]/80"
+                    >
+                      {l}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
+        <div className="grid gap-10 md:grid-cols-12">
+          <div className="md:col-span-5">
+            <h2 className="font-serif text-3xl tracking-tight text-[#1B3A5C]">
+              Cygnus Coaching
+            </h2>
+            <p className="mt-4 text-base leading-7 text-[#1B3A5C]/75">
+              {home?.content
+                ? "De introtekst komt uit Sanity (pagina met slug “home”)."
+                : "Voeg in Sanity een pagina toe met slug “home” om de titel en inhoud dynamisch te maken."}
+            </p>
+            <p className="mt-4 text-base leading-7 text-[#1B3A5C]/75">
+              Met een rustige, resultaatgerichte aanpak creëren we ruimte voor
+              helderheid, energie en duurzame verandering.
+            </p>
+          </div>
+
+          <div className="md:col-span-7">
+            <div className="rounded-2xl border border-[#1B3A5C]/10 bg-white p-6 shadow-lg shadow-[#1B3A5C]/5 sm:p-8">
+              <p className="text-sm font-semibold uppercase tracking-wider text-[#1B3A5C]/55">
+                Korte belofte
+              </p>
+              <p className="mt-3 font-serif text-2xl leading-snug text-[#1B3A5C]">
+                Warm menselijk contact, scherpe vragen, en concrete stappen.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {[
+                  "ICF-geïnspireerd",
+                  "NLP",
+                  "Stress & Burn-out",
+                  "Loopbaan",
+                  "Leiderschap",
+                ].map((t) => (
+                  <span
+                    key={t}
+                    className="rounded-full border border-[#1B3A5C]/15 bg-[#F9F7F4] px-4 py-2 text-xs font-semibold text-[#1B3A5C]/80"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
+      </section>
+
+      <section id="diensten" className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
+        <div className="flex items-end justify-between gap-6">
+          <div>
+            <h2 className="font-serif text-3xl tracking-tight text-[#1B3A5C]">
+              Diensten
+            </h2>
+            <p className="mt-3 max-w-2xl text-base leading-7 text-[#1B3A5C]/75">
+              Kies het traject dat past bij jouw situatie. Elk traject is
+              persoonlijk, discreet en doelgericht.
+            </p>
+          </div>
+          <Link
+            href="/contact"
+            className="hidden rounded-full border border-[#1B3A5C]/20 bg-white/60 px-5 py-2 text-sm font-semibold text-[#1B3A5C] transition hover:bg-white md:inline-flex"
+          >
+            Vraag advies
+          </Link>
+        </div>
+
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
+          {serviceCards.length > 0 ? (
+            serviceCards.map((s) => (
+              <Link
+                key={s._id}
+                href={`/coaching/${s.slug.current}`}
+                className="group rounded-2xl border border-[#1B3A5C]/10 bg-white p-6 shadow-lg shadow-[#1B3A5C]/5 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#1B3A5C]/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A96E]/60"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <h3 className="font-serif text-2xl tracking-tight text-[#1B3A5C]">
+                    {s.name}
+                  </h3>
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#F9F7F4] text-[#C9A96E] transition group-hover:bg-[#C9A96E] group-hover:text-[#1B3A5C]">
+                    →
+                  </span>
+                </div>
+                <p className="mt-4 text-sm leading-6 text-[#1B3A5C]/75">
+                  {s.description ??
+                    "Bewerk deze beschrijving in Sanity bij “Dienst”."}
+                </p>
+                <div className="mt-6 h-px w-full bg-[#1B3A5C]/10" />
+                <p className="mt-4 text-sm font-semibold text-[#1B3A5C]/85">
+                  Lees meer
+                </p>
+              </Link>
+            ))
+          ) : (
+            <div className="rounded-2xl border border-[#1B3A5C]/10 bg-white p-6 text-sm text-[#1B3A5C]/75 md:col-span-3">
+              Voeg in Sanity minstens één document toe van type{" "}
+              <span className="font-semibold text-[#1B3A5C]">Dienst</span> met
+              slug (bv. stress-en-burn-out).
+            </div>
+          )}
+        </div>
+
+        <div className="mt-8 flex md:hidden">
+          <Link
+            href="/contact"
+            className="w-full rounded-full bg-[#1B3A5C] px-6 py-3 text-center text-sm font-semibold text-[#F9F7F4] transition hover:bg-[#16314D]"
+          >
+            Vraag advies
+          </Link>
+        </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
+        <div className="rounded-3xl border border-[#1B3A5C]/10 bg-white p-8 shadow-lg shadow-[#1B3A5C]/5 sm:p-10">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 className="font-serif text-3xl tracking-tight text-[#1B3A5C]">
+                Getuigenissen
+              </h2>
+              <p className="mt-3 max-w-2xl text-base leading-7 text-[#1B3A5C]/75">
+                Vertrouwelijkheid staat centraal. Namen kunnen verkort of
+                geanonimiseerd zijn.
+              </p>
+            </div>
+            <Link
+              href="/getuigenissen"
+              className="inline-flex items-center justify-center rounded-full border border-[#1B3A5C]/20 bg-[#F9F7F4] px-5 py-2 text-sm font-semibold text-[#1B3A5C] transition hover:bg-white"
+            >
+              Alle getuigenissen
+            </Link>
+          </div>
+
+          <div className="mt-8 grid gap-6 md:grid-cols-3">
+            {(testimonials as Testimonial[] | null | undefined)?.length ? (
+              (testimonials as Testimonial[]).map((t) => (
+                <figure
+                  key={t._id}
+                  className="rounded-2xl border border-[#1B3A5C]/10 bg-[#F9F7F4] p-6"
+                >
+                  <blockquote className="text-sm leading-7 text-[#1B3A5C]/80">
+                    “{t.text}”
+                  </blockquote>
+                  <figcaption className="mt-5 flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-semibold text-[#1B3A5C]">
+                        {t.firstName}
+                      </p>
+                      <p className="text-xs text-[#1B3A5C]/60">
+                        {t.role ?? "—"}
+                      </p>
+                    </div>
+                    <span className="rounded-full border border-[#1B3A5C]/15 bg-white px-3 py-1 text-xs font-semibold text-[#1B3A5C]/70">
+                      {t.category ?? "algemeen"}
+                    </span>
+                  </figcaption>
+                </figure>
+              ))
+            ) : (
+              <div className="rounded-2xl border border-[#1B3A5C]/10 bg-[#F9F7F4] p-6 text-sm text-[#1B3A5C]/75 md:col-span-3">
+                Voeg in Sanity documenten toe van type{" "}
+                <span className="font-semibold text-[#1B3A5C]">
+                  Getuigenis
+                </span>
+                .
+              </div>
+            )}
+          </div>
+
+          <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-[#1B3A5C]/10 pt-8 sm:flex-row">
+            <p className="text-sm text-[#1B3A5C]/70">
+              Klaar om een eerste stap te zetten?
+            </p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center rounded-full bg-[#C9A96E] px-6 py-3 text-sm font-semibold text-[#1B3A5C] shadow-sm shadow-[#1B3A5C]/10 transition hover:bg-[#D6B981] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1B3A5C]/30"
+            >
+              Contacteer Rike
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

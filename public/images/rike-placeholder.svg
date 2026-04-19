@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Portret placeholder</title>
+  <desc id="desc">Neutrale placeholder voor een portretfoto</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F9F7F4"/>
+      <stop offset="100%" stop-color="#E8E4DD"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#1B3A5C" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <rect width="800" height="1000" fill="url(#accent)"/>
+  <circle cx="400" cy="380" r="140" fill="#1B3A5C" opacity="0.12"/>
+  <ellipse cx="400" cy="720" rx="220" ry="280" fill="#1B3A5C" opacity="0.08"/>
+  <text x="400" y="920" text-anchor="middle" font-family="system-ui, sans-serif" font-size="22" fill="#1B3A5C" opacity="0.45">Foto</text>
+</svg>
