@@ -1,6 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import emailjs from "@emailjs/browser";
+import { useRef, useState } from "react";
+
+const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!;
+const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!;
+const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!;
 
 const interests = [
   { value: "", label: "Selecteer (optioneel)" },
@@ -12,15 +17,24 @@ const interests = [
 ] as const;
 
 export default function ContactForm() {
-  const [status, setStatus] = useState<"idle" | "sent">("idle");
+  const formRef = useRef<HTMLFormElement>(null);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setStatus("sent");
+    setStatus("sending");
+    try {
+      await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current!, PUBLIC_KEY);
+      setStatus("sent");
+      formRef.current?.reset();
+    } catch {
+      setStatus("error");
+    }
   }
 
   return (
     <form
+      ref={formRef}
       onSubmit={onSubmit}
       className="rounded-2xl border border-[#1B3A5C]/10 bg-white p-6 shadow-lg shadow-[#1B3A5C]/5 sm:p-8"
     >
@@ -43,9 +57,7 @@ export default function ContactForm() {
           />
         </label>
         <label className="block sm:col-span-2">
-          <span className="text-sm font-semibold text-[#1B3A5C]">
-            Telefoon
-          </span>
+          <span className="text-sm font-semibold text-[#1B3A5C]">Telefoon</span>
           <input
             name="phone"
             type="tel"
@@ -53,9 +65,7 @@ export default function ContactForm() {
           />
         </label>
         <label className="block sm:col-span-2">
-          <span className="text-sm font-semibold text-[#1B3A5C]">
-            Interesse
-          </span>
+          <span className="text-sm font-semibold text-[#1B3A5C]">Interesse</span>
           <select
             name="interest"
             className="mt-2 w-full rounded-xl border border-[#1B3A5C]/15 bg-[#F9F7F4] px-4 py-3 text-sm text-[#1B3A5C] outline-none focus:border-[#1B3A5C]/30 focus:ring-2 focus:ring-[#C9A96E]/40"
@@ -80,16 +90,21 @@ export default function ContactForm() {
       </div>
       <button
         type="submit"
-        className="mt-6 w-full rounded-full bg-[#1B3A5C] px-6 py-3 text-sm font-semibold text-[#F9F7F4] transition hover:bg-[#16314D] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A96E]/70 sm:w-auto"
+        disabled={status === "sending"}
+        className="mt-6 w-full rounded-full bg-[#1B3A5C] px-6 py-3 text-sm font-semibold text-[#F9F7F4] transition hover:bg-[#16314D] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A96E]/70 disabled:opacity-60 sm:w-auto"
       >
-        Verstuur
+        {status === "sending" ? "Versturen…" : "Verstuur"}
       </button>
-      {status === "sent" ? (
+      {status === "sent" && (
         <p className="mt-4 text-sm text-[#1B3A5C]/75">
-          Bedankt voor je bericht. Koppel dit formulier later aan een API-route
-          of e-maildienst om berichten te verwerken.
+          Bedankt voor je bericht! We nemen zo snel mogelijk contact op.
         </p>
-      ) : null}
+      )}
+      {status === "error" && (
+        <p className="mt-4 text-sm text-red-600">
+          Er is iets misgegaan. Probeer het opnieuw of stuur een e-mail rechtstreeks.
+        </p>
+      )}
     </form>
   );
 }

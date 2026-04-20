@@ -18,7 +18,9 @@ const mainLinks = [
   {href: '/contact', label: 'Contact'},
 ] as const
 
-export default function Navbar() {
+const FALLBACK_LOGO = "https://www.coachinfo.be/images/account_logo/239/image-2016-02-15.jpg"
+
+export default function Navbar({ logoUrl }: { logoUrl?: string }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mobileCoachingOpen, setMobileCoachingOpen] = useState(false)
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false)
@@ -50,9 +52,13 @@ export default function Navbar() {
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         <Link
           href="/"
-          className="group inline-flex items-baseline gap-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A96E]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F9F7F4]"
+          className="group inline-flex items-center gap-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A96E]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F9F7F4]"
         >
-          <img src="https://www.coachinfo.be/images/account_logo/239/image-2016-02-15.jpg" alt="Cygnus Coaching"></img>
+          <img
+            src={logoUrl ?? FALLBACK_LOGO}
+            alt="Cygnus Coaching"
+            className="h-9 w-auto object-contain"
+          />
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">

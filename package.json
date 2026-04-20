@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@portabletext/react": "^6.0.3",
     "@sanity/image-url": "^2.1.1",
     "@sanity/vision": "^5.20.0",

@@ -3,6 +3,7 @@ import { groq } from "next-sanity";
 import type { PortableTextBlock } from "@portabletext/types";
 import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "../sanity/lib/live";
+import { urlFor } from "../sanity/lib/image";
 import { portableTextComponents } from "../components/portableTextComponents";
 
 type ServiceCard = {
@@ -31,6 +32,7 @@ type Settings = {
   specializations?: string[];
   partners?: string[];
   metaDescription?: string;
+  heroPhoto?: object;
 };
 
 const homePageQuery = groq`*[_type=="page" && slug.current=="home"][0]{ title, content, introText }`;
@@ -60,7 +62,8 @@ const settingsQuery = groq`*[_type == "settings" && _id == "settings"][0]{
   values,
   specializations,
   partners,
-  metaDescription
+  metaDescription,
+  heroPhoto { asset-> }
 }`;
 
 const DEFAULT_VALUES = ["Integriteit", "Vertrouwen", "Respect", "Passie", "Engagement", "Kwaliteit"];
@@ -146,7 +149,13 @@ export default async function HomePage() {
               <div className="aspect-[4/5] w-full bg-[linear-gradient(180deg,rgba(27,58,92,0.06),rgba(201,169,110,0.10))]">
                 <div className="flex h-full items-center justify-center px-10 text-center">
                   <div>
-                   <img src="https://www.vind-een-coach.be/media/vecbe/siteprofile/images/38169_foto%20240923%20%201.jpg" alt="Rike Weltjens"></img>
+                   <img
+                      src={cfg?.heroPhoto
+                        ? urlFor(cfg.heroPhoto).width(600).url()
+                        : "https://www.vind-een-coach.be/media/vecbe/siteprofile/images/38169_foto%20240923%20%201.jpg"}
+                      alt="Rike Weltjens"
+                      className="w-full h-auto object-cover"
+                    />
                   </div>
                 </div>
               </div>

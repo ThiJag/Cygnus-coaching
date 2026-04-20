@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import { groq } from "next-sanity";
 import Navbar from "../components/Navbar";
 import { sanityFetch, SanityLive } from "../sanity/lib/live";
+import { urlFor } from "../sanity/lib/image";
 import "./globals.css";
 
 const inter = Inter({
@@ -17,7 +18,8 @@ const playfair = Playfair_Display({
 
 const settingsMetaQuery = groq`*[_type == "settings" && _id == "settings"][0]{
   companyName,
-  metaDescription
+  metaDescription,
+  logo { asset-> }
 }`;
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -35,18 +37,22 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { data } = await sanityFetch({ query: settingsMetaQuery });
+  const s = data as { companyName?: string; logo?: object } | null;
+  const logoUrl = s?.logo ? urlFor(s.logo).height(72).url() : undefined;
+
   return (
     <html
       lang="nl"
       className={`${inter.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#F9F7F4] font-sans text-[#0F172A]">
-        <Navbar />
+        <Navbar logoUrl={logoUrl} />
         <main className="flex-1">{children}</main>
         <SanityLive />
       </body>

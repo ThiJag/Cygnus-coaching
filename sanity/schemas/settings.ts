@@ -6,6 +6,20 @@ export const settings = defineType({
   type: 'document',
   fields: [
     defineField({
+      name: 'logo',
+      title: 'Logo (navigatiebalk)',
+      type: 'image',
+      description: 'Upload hier het logo dat in de navigatiebalk verschijnt',
+      options: {hotspot: false},
+    }),
+    defineField({
+      name: 'heroPhoto',
+      title: 'Profielfoto (startpagina)',
+      type: 'image',
+      description: 'Foto rechtsboven in de hero-sectie van de startpagina',
+      options: {hotspot: true},
+    }),
+    defineField({
       name: 'companyName',
       title: 'Bedrijfsnaam',
       type: 'string',
