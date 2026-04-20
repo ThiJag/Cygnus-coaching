@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { groq } from "next-sanity";
 import Navbar from "../components/Navbar";
-import { SanityLive } from "../sanity/lib/live";
+import { sanityFetch, SanityLive } from "../sanity/lib/live";
 import "./globals.css";
 
 const inter = Inter({
@@ -14,14 +15,25 @@ const playfair = Playfair_Display({
   variable: "--font-playfair",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Cygnus Coaching BV",
-    template: "%s | Cygnus Coaching BV",
-  },
-  description:
-    "Professionele coaching in Genk door Rike Weltjens — stress & burn-out, loopbaan, leiderschap en life coaching.",
-};
+const settingsMetaQuery = groq`*[_type == "settings" && _id == "settings"][0]{
+  companyName,
+  metaDescription
+}`;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { data } = await sanityFetch({ query: settingsMetaQuery });
+  const s = data as { companyName?: string; metaDescription?: string } | null;
+  const name = s?.companyName ?? "Cygnus Coaching BV";
+  return {
+    title: {
+      default: name,
+      template: `%s | ${name}`,
+    },
+    description:
+      s?.metaDescription ??
+      "Professionele coaching in Genk door Rike Weltjens — stress & burn-out, loopbaan, leiderschap en life coaching.",
+  };
+}
 
 export default function RootLayout({
   children,

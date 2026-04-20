@@ -7,13 +7,46 @@ import { sanityFetch } from "../../sanity/lib/live";
 import { portableTextComponentsSimple } from "../../components/portableTextComponents";
 
 const pageQuery = groq`
-  *[_type == "page" && slug.current == "aanpak"][0]{ title, content }
+  *[_type == "page" && slug.current == "aanpak"][0]{
+    title,
+    content,
+    introText,
+    processSteps,
+    trajectInfo,
+    icebergText
+  }
 `;
 
 export const metadata: Metadata = {
   title: "Aanpak",
   description: "Intake, coaching en opvolging — helder en persoonlijk.",
 };
+
+type ProcessStep = { title?: string; text?: string };
+
+type AanpakDoc = {
+  title?: string;
+  content?: PortableTextBlock[];
+  introText?: string;
+  processSteps?: ProcessStep[];
+  trajectInfo?: string;
+  icebergText?: string;
+};
+
+const DEFAULT_STEPS: ProcessStep[] = [
+  {
+    title: "Intake",
+    text: "We verkennen je vraag, context en verwachtingen—helder en vertrouwelijk.",
+  },
+  {
+    title: "Coaching",
+    text: "Gefocuste sessies met ruimte voor reflectie, inzicht en concrete stappen.",
+  },
+  {
+    title: "Integratie & opvolging",
+    text: "Verankeren in de praktijk en waar nodig bijsturen.",
+  },
+];
 
 function IcebergSvg() {
   return (
@@ -74,22 +107,12 @@ function IcebergSvg() {
 
 export default async function AanpakPage() {
   const { data } = await sanityFetch({ query: pageQuery });
-  const doc = data as { title?: string; content?: PortableTextBlock[] } | null;
+  const doc = data as AanpakDoc | null;
 
-  const steps = [
-    {
-      title: "Intake",
-      text: "We verkennen je vraag, context en verwachtingen—helder en vertrouwelijk.",
-    },
-    {
-      title: "Coaching",
-      text: "Gefocuste sessies met ruimte voor reflectie, inzicht en concrete stappen.",
-    },
-    {
-      title: "Integratie & opvolging",
-      text: "Verankeren in de praktijk en waar nodig bijsturen.",
-    },
-  ];
+  const steps = doc?.processSteps?.length ? doc.processSteps : DEFAULT_STEPS;
+  const introText = doc?.introText ?? "Een doorlopende lijn van intake tot integratie—rustig tempo, duidelijke structuur.";
+  const icebergText = doc?.icebergText ?? "Boven de waterlijn: wat anderen zien. Onder de waterlijn: motieven, overtuigingen en patronen die gedrag sturen. Coaching richt zich bewust op beide lagen.";
+  const trajectInfo = doc?.trajectInfo ?? "Typisch traject: 6 sessies. Voor een passend voorstel en prijs: neem vrijblijvend contact op.";
 
   return (
     <div className="bg-[#F9F7F4]">
@@ -99,8 +122,7 @@ export default async function AanpakPage() {
             {doc?.title ?? "Aanpak"}
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-[#1B3A5C]/75">
-            Een doorlopende lijn van intake tot integratie—rustig tempo,
-            duidelijke structuur.
+            {introText}
           </p>
         </div>
       </section>
@@ -109,7 +131,7 @@ export default async function AanpakPage() {
         <ol className="grid gap-6 md:grid-cols-3">
           {steps.map((s, i) => (
             <li
-              key={s.title}
+              key={s.title ?? i}
               className="relative rounded-2xl border border-[#1B3A5C]/10 bg-white p-6 shadow-lg shadow-[#1B3A5C]/5"
             >
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#1B3A5C] text-sm font-bold text-[#F9F7F4]">
@@ -131,9 +153,7 @@ export default async function AanpakPage() {
               IJsbergmodel (McClelland)
             </h2>
             <p className="mt-3 text-sm leading-6 text-[#1B3A5C]/75">
-              Boven de waterlijn: wat anderen zien. Onder de waterlijn:
-              motieven, overtuigingen en patronen die gedrag sturen. Coaching
-              richt zich bewust op beide lagen.
+              {icebergText}
             </p>
           </div>
           <IcebergSvg />
@@ -160,9 +180,7 @@ export default async function AanpakPage() {
           <div>
             <h2 className="font-serif text-xl text-[#1B3A5C]">Traject</h2>
             <p className="mt-2 text-sm leading-6 text-[#1B3A5C]/75">
-              Typisch traject:{" "}
-              <strong className="text-[#1B3A5C]">6 sessies</strong>. Voor een
-              passend voorstel en prijs: neem vrijblijvend contact op.
+              {trajectInfo}
             </p>
           </div>
           <Link

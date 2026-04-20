@@ -17,6 +17,18 @@ type Testimonial = {
   text: string;
 };
 
+type Settings = {
+  companyName?: string;
+  contactName?: string;
+  city?: string;
+  tagline?: string;
+  heroText?: string;
+  quote?: string;
+  values?: string[];
+  specializations?: string[];
+  partners?: string[];
+};
+
 const homePageQuery = groq`*[_type=="page" && slug.current=="home"][0]{ title, content }`;
 
 const servicesQuery = groq`*[_type=="service"] | order(name asc) {
@@ -34,17 +46,41 @@ const testimonialsQuery = groq`*[_type=="testimonial"] | order(_createdAt desc) 
   text
 }`;
 
+const settingsQuery = groq`*[_type == "settings" && _id == "settings"][0]{
+  companyName,
+  contactName,
+  city,
+  tagline,
+  heroText,
+  quote,
+  values,
+  specializations,
+  partners
+}`;
+
+const DEFAULT_VALUES = ["Integriteit", "Vertrouwen", "Respect", "Passie", "Engagement", "Kwaliteit"];
+const DEFAULT_SPECIALIZATIONS = ["ICF-geïnspireerd", "NLP", "Stress & Burn-out", "Loopbaan", "Leiderschap"];
+const DEFAULT_PARTNERS = ["Loopbaancheque", "CERTO", "WSE"];
+
 export default async function HomePage() {
-  const [{ data: home }, { data: services }, { data: testimonials }] =
+  const [{ data: home }, { data: services }, { data: testimonials }, { data: settingsData }] =
     await Promise.all([
       sanityFetch({ query: homePageQuery }),
       sanityFetch({ query: servicesQuery }),
       sanityFetch({ query: testimonialsQuery }),
+      sanityFetch({ query: settingsQuery }),
     ]);
 
-  const heroTitle = home?.title ?? "Rust. Richting. Resultaat.";
-  const heroLead =
-    "Cygnus Coaching BV in Genk begeleidt professionals en leidinggevenden met warmte, helderheid en structuur—van stress & burn-out tot loopbaan- en leiderschapscoaching.";
+  const cfg = settingsData as Settings | null;
+  const heroTitle = (home as { title?: string } | null)?.title ?? "Rust. Richting. Resultaat.";
+  const heroLead = cfg?.heroText ?? "Cygnus Coaching BV in Genk begeleidt professionals en leidinggevenden met warmte, helderheid en structuur—van stress & burn-out tot loopbaan- en leiderschapscoaching.";
+  const values = cfg?.values?.length ? cfg.values : DEFAULT_VALUES;
+  const specializations = cfg?.specializations?.length ? cfg.specializations : DEFAULT_SPECIALIZATIONS;
+  const partners = cfg?.partners?.length ? cfg.partners : DEFAULT_PARTNERS;
+  const quote = cfg?.quote ?? "Warm menselijk contact, scherpe vragen, en concrete stappen.";
+  const companyName = cfg?.companyName ?? "Cygnus Coaching BV";
+  const city = cfg?.city ?? "Genk";
+  const coachName = cfg?.contactName ?? "Rike Weltjens";
 
   const serviceCards =
     (services as ServiceCard[] | null | undefined)?.slice(0, 3) ?? [];
@@ -56,9 +92,9 @@ export default async function HomePage() {
         <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-20">
           <div className="flex flex-col justify-center">
             <p className="inline-flex w-fit items-center gap-2 rounded-full border border-[#1B3A5C]/15 bg-white/50 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#1B3A5C]/80 backdrop-blur">
-              Cygnus Coaching BV · Genk
+              {companyName} · {city}
               <span className="h-1 w-1 rounded-full bg-[#C9A96E]" />
-              Rike Weltjens
+              {coachName}
             </p>
 
             <h1 className="mt-6 font-serif text-4xl leading-tight tracking-tight text-[#1B3A5C] sm:text-5xl">
@@ -86,14 +122,7 @@ export default async function HomePage() {
             </div>
 
             <div className="mt-10 grid grid-cols-2 gap-3 text-sm text-[#1B3A5C]/70 sm:grid-cols-3">
-              {[
-                "Integriteit",
-                "Vertrouwen",
-                "Respect",
-                "Passie",
-                "Engagement",
-                "Kwaliteit",
-              ].map((k) => (
+              {values.map((k) => (
                 <div
                   key={k}
                   className="rounded-xl border border-[#1B3A5C]/10 bg-white/50 px-4 py-3 backdrop-blur"
@@ -129,7 +158,7 @@ export default async function HomePage() {
                   Erkend / partners
                 </p>
                 <div className="mt-3 grid grid-cols-3 gap-3">
-                  {["Loopbaancheque", "CERTO", "WSE"].map((l) => (
+                  {partners.map((l) => (
                     <div
                       key={l}
                       className="flex items-center justify-center rounded-xl border border-[#1B3A5C]/10 bg-white px-3 py-3 text-xs font-semibold text-[#1B3A5C]/80"
@@ -148,13 +177,8 @@ export default async function HomePage() {
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-5">
             <h2 className="font-serif text-3xl tracking-tight text-[#1B3A5C]">
-              Cygnus Coaching
+              {companyName}
             </h2>
-            <p className="mt-4 text-base leading-7 text-[#1B3A5C]/75">
-              {home?.content
-                ? "De introtekst komt uit Sanity (pagina met slug “home”)."
-                : "Voeg in Sanity een pagina toe met slug “home” om de titel en inhoud dynamisch te maken."}
-            </p>
             <p className="mt-4 text-base leading-7 text-[#1B3A5C]/75">
               Met een rustige, resultaatgerichte aanpak creëren we ruimte voor
               helderheid, energie en duurzame verandering.
@@ -167,16 +191,10 @@ export default async function HomePage() {
                 Korte belofte
               </p>
               <p className="mt-3 font-serif text-2xl leading-snug text-[#1B3A5C]">
-                Warm menselijk contact, scherpe vragen, en concrete stappen.
+                {quote}
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
-                {[
-                  "ICF-geïnspireerd",
-                  "NLP",
-                  "Stress & Burn-out",
-                  "Loopbaan",
-                  "Leiderschap",
-                ].map((t) => (
+                {specializations.map((t) => (
                   <span
                     key={t}
                     className="rounded-full border border-[#1B3A5C]/15 bg-[#F9F7F4] px-4 py-2 text-xs font-semibold text-[#1B3A5C]/80"
@@ -211,23 +229,23 @@ export default async function HomePage() {
 
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           {serviceCards.length > 0 ? (
-            serviceCards.map((s) => (
+            serviceCards.map((svc) => (
               <Link
-                key={s._id}
-                href={`/coaching/${s.slug.current}`}
+                key={svc._id}
+                href={`/coaching/${svc.slug.current}`}
                 className="group rounded-2xl border border-[#1B3A5C]/10 bg-white p-6 shadow-lg shadow-[#1B3A5C]/5 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#1B3A5C]/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A96E]/60"
               >
                 <div className="flex items-start justify-between gap-4">
                   <h3 className="font-serif text-2xl tracking-tight text-[#1B3A5C]">
-                    {s.name}
+                    {svc.name}
                   </h3>
                   <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#F9F7F4] text-[#C9A96E] transition group-hover:bg-[#C9A96E] group-hover:text-[#1B3A5C]">
                     →
                   </span>
                 </div>
                 <p className="mt-4 text-sm leading-6 text-[#1B3A5C]/75">
-                  {s.description ??
-                    "Bewerk deze beschrijving in Sanity bij “Dienst”."}
+                  {svc.description ??
+                    "Bewerk deze beschrijving in Sanity bij \u201cDienst\u201d."}
                 </p>
                 <div className="mt-6 h-px w-full bg-[#1B3A5C]/10" />
                 <p className="mt-4 text-sm font-semibold text-[#1B3A5C]/85">
@@ -282,7 +300,7 @@ export default async function HomePage() {
                   className="rounded-2xl border border-[#1B3A5C]/10 bg-[#F9F7F4] p-6"
                 >
                   <blockquote className="text-sm leading-7 text-[#1B3A5C]/80">
-                    “{t.text}”
+                    &ldquo;{t.text}&rdquo;
                   </blockquote>
                   <figcaption className="mt-5 flex items-center justify-between gap-4">
                     <div>
@@ -318,7 +336,7 @@ export default async function HomePage() {
               href="/contact"
               className="inline-flex items-center justify-center rounded-full bg-[#C9A96E] px-6 py-3 text-sm font-semibold text-[#1B3A5C] shadow-sm shadow-[#1B3A5C]/10 transition hover:bg-[#D6B981] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1B3A5C]/30"
             >
-              Contacteer Rike
+              Contacteer {coachName}
             </Link>
           </div>
         </div>

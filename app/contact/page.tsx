@@ -10,7 +10,8 @@ const settingsQuery = groq`*[_type == "settings" && _id == "settings"][0]{
   city,
   country,
   phone,
-  email
+  email,
+  btwNummer
 }`;
 
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ export default async function ContactPage() {
     country?: string;
     phone?: string;
     email?: string;
+    btwNummer?: string;
   } | null;
 
   const phone = s?.phone ?? "+32 496 10 55 73";
@@ -91,6 +93,12 @@ export default async function ContactPage() {
                       {s.email}
                     </a>
                   </dd>
+                </div>
+              ) : null}
+              {s?.btwNummer ? (
+                <div>
+                  <dt className="font-semibold text-[#1B3A5C]">BTW-nummer</dt>
+                  <dd>{s.btwNummer}</dd>
                 </div>
               ) : null}
             </dl>

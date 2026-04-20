@@ -6,9 +6,18 @@ import type { PortableTextBlock } from "@portabletext/types";
 import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "../../sanity/lib/live";
 import { portableTextComponentsSimple } from "../../components/portableTextComponents";
+import { urlFor } from "../../sanity/lib/image";
 
 const pageQuery = groq`
-  *[_type == "page" && slug.current == "over-mij"][0]{ title, content }
+  *[_type == "page" && slug.current == "over-mij"][0]{
+    title,
+    content,
+    introText,
+    credentials,
+    inspirationQuote,
+    quoteAuthor,
+    photo
+  }
 `;
 
 export const metadata: Metadata = {
@@ -16,9 +25,27 @@ export const metadata: Metadata = {
   description: "Rike Weltjens — gecertificeerd coach met 20+ jaar ervaring.",
 };
 
+type OverMijDoc = {
+  title?: string;
+  content?: PortableTextBlock[];
+  introText?: string;
+  credentials?: string[];
+  inspirationQuote?: string;
+  quoteAuthor?: string;
+  photo?: { asset?: { _ref?: string } };
+};
+
+const DEFAULT_CREDENTIALS = ["ICF ACC", "NLP master", "Stress & burn-out certificaat"];
+
 export default async function OverMijPage() {
   const { data } = await sanityFetch({ query: pageQuery });
-  const doc = data as { title?: string; content?: PortableTextBlock[] } | null;
+  const doc = data as OverMijDoc | null;
+
+  const introText = doc?.introText ?? "Rike Weltjens — gecertificeerd ICF-coach, met meer dan 20 jaar ervaring in begeleiding en ontwikkeling.";
+  const credentials = doc?.credentials?.length ? doc.credentials : DEFAULT_CREDENTIALS;
+  const inspirationQuote = doc?.inspirationQuote ?? "We zien goed enkel met het hart. Het wezenlijke is onzichtbaar voor de ogen.";
+  const quoteAuthor = doc?.quoteAuthor ?? "Antoine de Saint-Exupéry";
+  const photoUrl = doc?.photo?.asset ? urlFor(doc.photo).width(800).url() : null;
 
   return (
     <div className="bg-[#F9F7F4]">
@@ -28,8 +55,7 @@ export default async function OverMijPage() {
             {doc?.title ?? "Over mij"}
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-[#1B3A5C]/75">
-            Rike Weltjens — gecertificeerd ICF-coach, met meer dan 20 jaar
-            ervaring in begeleiding en ontwikkeling.
+            {introText}
           </p>
         </div>
       </section>
@@ -38,23 +64,34 @@ export default async function OverMijPage() {
         <div className="md:col-span-5">
           <div className="overflow-hidden rounded-[2rem] border border-[#1B3A5C]/10 bg-white shadow-xl shadow-[#1B3A5C]/10">
             <div className="relative aspect-[4/5] w-full">
-              <Image
-                src="/images/rike-placeholder.svg"
-                alt="Rike Weltjens"
-                fill
-                className="object-cover"
-                sizes="(min-width: 768px) 40vw, 100vw"
-                priority
-                unoptimized
-              />
+              {photoUrl ? (
+                <Image
+                  src={photoUrl}
+                  alt={doc?.title ?? "Rike Weltjens"}
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 768px) 40vw, 100vw"
+                  priority
+                />
+              ) : (
+                <Image
+                  src="/images/rike-placeholder.svg"
+                  alt="Rike Weltjens"
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 768px) 40vw, 100vw"
+                  priority
+                  unoptimized
+                />
+              )}
             </div>
           </div>
-          <p className="mt-4 text-center text-xs text-[#1B3A5C]/55">
-            Placeholder in{" "}
-            <code className="rounded bg-[#1B3A5C]/10 px-1">
-              public/images/rike-placeholder.svg
-            </code>
-          </p>
+          {!photoUrl && (
+            <p className="mt-4 text-center text-xs text-[#1B3A5C]/55">
+              Voeg een foto toe via Sanity Studio (pagina{" "}
+              <strong>Over Mij</strong> → Foto)
+            </p>
+          )}
         </div>
 
         <div className="md:col-span-7">
@@ -77,26 +114,20 @@ export default async function OverMijPage() {
               Certificaten &amp; opleidingen
             </h2>
             <ul className="mt-4 space-y-3 text-sm text-[#1B3A5C]/85">
-              <li className="flex gap-3">
-                <span className="text-[#C9A96E]">✓</span> ICF ACC
-              </li>
-              <li className="flex gap-3">
-                <span className="text-[#C9A96E]">✓</span> NLP master
-              </li>
-              <li className="flex gap-3">
-                <span className="text-[#C9A96E]">✓</span> Stress &amp;
-                burn-out certificaat
-              </li>
+              {credentials.map((c) => (
+                <li key={c} className="flex gap-3">
+                  <span className="text-[#C9A96E]">✓</span> {c}
+                </li>
+              ))}
             </ul>
           </div>
 
           <blockquote className="mt-8 border-l-4 border-[#C9A96E] pl-6">
             <p className="font-serif text-xl italic leading-relaxed text-[#1B3A5C]">
-              &ldquo;We zien goed enkel met het hart. Het wezenlijke is
-              onzichtbaar voor de ogen.&rdquo;
+              &ldquo;{inspirationQuote}&rdquo;
             </p>
             <footer className="mt-3 text-sm text-[#1B3A5C]/60">
-              — Antoine de Saint-Exupéry
+              — {quoteAuthor}
             </footer>
           </blockquote>
 
