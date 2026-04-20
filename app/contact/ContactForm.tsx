@@ -19,9 +19,24 @@ const interests = [
 export default function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [loadTime] = useState(() => Date.now());
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    // Honeypot: bots vullen dit verborgen veld in
+    const honeypot = (e.currentTarget.elements.namedItem("_website") as HTMLInputElement)?.value;
+    if (honeypot) {
+      setStatus("sent");
+      return;
+    }
+
+    // Timing check: geen mens vult een formulier in onder 2 seconden
+    if (Date.now() - loadTime < 2000) {
+      setStatus("sent");
+      return;
+    }
+
     setStatus("sending");
     try {
       await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current!, PUBLIC_KEY);
@@ -38,6 +53,15 @@ export default function ContactForm() {
       onSubmit={onSubmit}
       className="rounded-2xl border border-[#1B3A5C]/10 bg-white p-6 shadow-lg shadow-[#1B3A5C]/5 sm:p-8"
     >
+      {/* Honeypot — verborgen voor gebruikers, bots vullen het in */}
+      <input
+        name="_website"
+        type="text"
+        tabIndex={-1}
+        aria-hidden="true"
+        autoComplete="off"
+        style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", overflow: "hidden" }}
+      />
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="block sm:col-span-1">
           <span className="text-sm font-semibold text-[#1B3A5C]">Naam</span>
