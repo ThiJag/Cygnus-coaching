@@ -98,11 +98,11 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-[radial-gradient(60rem_30rem_at_20%_10%,rgba(201,169,110,0.22),transparent_60%),radial-gradient(55rem_28rem_at_80%_30%,rgba(27,58,92,0.18),transparent_60%)]" />
         <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-20">
           <div className="flex flex-col justify-center">
-            <p className="inline-flex w-fit items-center gap-2 rounded-full border border-[#1B3A5C]/15 bg-white/50 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#1B3A5C]/80 backdrop-blur">
+            {/*<p className="inline-flex w-fit items-center gap-2 rounded-full border border-[#1B3A5C]/15 bg-white/50 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#1B3A5C]/80 backdrop-blur">
               {companyName} · {city}
               <span className="h-1 w-1 rounded-full bg-[#C9A96E]" />
               {tagline ?? coachName}
-            </p>
+            </p>*/}
 
             <h1 className="mt-6 font-serif text-4xl leading-tight tracking-tight text-[#1B3A5C] sm:text-5xl">
               {heroTitle}
