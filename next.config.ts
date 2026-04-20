@@ -8,7 +8,7 @@ const cspMain = [
   // unsafe-eval is required by React in dev mode for call-stack reconstruction; never used in production
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://cdn.sanity.io",
+  "img-src 'self' data: blob: https://cdn.sanity.io https://www.coachinfo.be https://www.vind-een-coach.be",
   "font-src 'self'",
   "connect-src 'self' https://api.emailjs.com https://*.api.sanity.io https://*.sanity.io wss://*.sanity.io",
   "frame-src 'none'",
@@ -38,6 +38,11 @@ const baseHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "cdn.sanity.io" },
+    ],
+  },
   async headers() {
     return [
       {

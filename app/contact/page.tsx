@@ -105,7 +105,7 @@ export default async function ContactPage() {
           </div>
         </div>
         <div className="md:col-span-7">
-          <ContactForm />
+          <ContactForm email={s?.email} />
         </div>
       </div>
     </div>

@@ -16,7 +16,7 @@ const interests = [
   { value: "anders", label: "Anders / nog niet zeker" },
 ] as const;
 
-export default function ContactForm() {
+export default function ContactForm({ email }: { email?: string }) {
   const formRef = useRef<HTMLFormElement>(null);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [loadTime] = useState(() => Date.now());
@@ -42,7 +42,8 @@ export default function ContactForm() {
       await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current!, PUBLIC_KEY);
       setStatus("sent");
       formRef.current?.reset();
-    } catch {
+    } catch (err) {
+      console.error("[ContactForm] EmailJS error:", err);
       setStatus("error");
     }
   }
@@ -126,7 +127,9 @@ export default function ContactForm() {
       )}
       {status === "error" && (
         <p className="mt-4 text-sm text-red-600">
-          Er is iets misgegaan. Probeer het opnieuw of stuur een e-mail rechtstreeks.
+          Er is iets misgegaan. Probeer het opnieuw{email ? (
+            <> of <a href={`mailto:${email}`} className="underline">{email}</a></>
+          ) : " of stuur een e-mail rechtstreeks"}.
         </p>
       )}
     </form>
