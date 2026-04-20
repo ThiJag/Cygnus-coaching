@@ -1,5 +1,7 @@
 import {defineField, defineType} from 'sanity'
 
+const isSlug = (slug: string) => ({document}: any) => document?.slug?.current !== slug
+
 export const page = defineType({
   name: 'page',
   title: 'Pagina',
@@ -19,12 +21,6 @@ export const page = defineType({
       validation: (r) => r.required(),
     }),
     defineField({
-      name: 'content',
-      title: 'Inhoud',
-      type: 'array',
-      of: [{type: 'block'}],
-    }),
-    defineField({
       name: 'introText',
       title: 'Intro-tekst',
       type: 'text',
@@ -32,9 +28,17 @@ export const page = defineType({
       description: 'Korte inleiding onder de paginatitel',
     }),
     defineField({
-      name: 'processSteps',
-      title: 'Processtappen (Aanpak-pagina)',
+      name: 'content',
+      title: 'Inhoud',
       type: 'array',
+      of: [{type: 'block'}],
+      description: 'Rijke tekst — verschijnt in het hoofdgedeelte van de pagina',
+    }),
+    defineField({
+      name: 'processSteps',
+      title: 'Processtappen',
+      type: 'array',
+      hidden: isSlug('aanpak'),
       of: [{
         type: 'object',
         fields: [
@@ -46,38 +50,44 @@ export const page = defineType({
     }),
     defineField({
       name: 'trajectInfo',
-      title: 'Trajectinfo (Aanpak-pagina)',
+      title: 'Trajectinfo',
       type: 'text',
       rows: 2,
-      description: 'Bv. "Typisch traject: 6 sessies..."',
+      hidden: isSlug('aanpak'),
+      description: 'Bv. "Typisch traject: 6 sessies. Voor een passend voorstel: neem contact op."',
     }),
     defineField({
       name: 'icebergText',
-      title: 'IJsbergmodel-tekst (Aanpak-pagina)',
+      title: 'IJsbergmodel-tekst',
       type: 'text',
       rows: 3,
+      hidden: isSlug('aanpak'),
     }),
     defineField({
       name: 'credentials',
-      title: 'Certificaten & opleidingen (Over mij-pagina)',
+      title: 'Certificaten & opleidingen',
       type: 'array',
+      hidden: isSlug('over-mij'),
       of: [{type: 'string'}],
     }),
     defineField({
       name: 'inspirationQuote',
-      title: 'Inspiratiecitaat (Over mij-pagina)',
+      title: 'Inspiratiecitaat',
       type: 'text',
       rows: 3,
+      hidden: isSlug('over-mij'),
     }),
     defineField({
       name: 'quoteAuthor',
-      title: 'Auteur citaat (Over mij-pagina)',
+      title: 'Auteur citaat',
       type: 'string',
+      hidden: isSlug('over-mij'),
     }),
     defineField({
       name: 'photo',
-      title: 'Foto (Over mij-pagina)',
+      title: 'Foto',
       type: 'image',
+      hidden: isSlug('over-mij'),
       options: {hotspot: true},
     }),
   ],

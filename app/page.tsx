@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { groq } from "next-sanity";
+import type { PortableTextBlock } from "@portabletext/types";
+import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "../sanity/lib/live";
+import { portableTextComponentsSimple } from "../components/portableTextComponents";
 
 type ServiceCard = {
   _id: string;
@@ -29,7 +32,7 @@ type Settings = {
   partners?: string[];
 };
 
-const homePageQuery = groq`*[_type=="page" && slug.current=="home"][0]{ title, content }`;
+const homePageQuery = groq`*[_type=="page" && slug.current=="home"][0]{ title, content, introText }`;
 
 const servicesQuery = groq`*[_type=="service"] | order(name asc) {
   _id,
@@ -72,7 +75,8 @@ export default async function HomePage() {
     ]);
 
   const cfg = settingsData as Settings | null;
-  const heroTitle = (home as { title?: string } | null)?.title ?? "Rust. Richting. Resultaat.";
+  const homeDoc = home as { title?: string; content?: PortableTextBlock[]; introText?: string } | null;
+  const heroTitle = homeDoc?.title ?? "Rust. Richting. Resultaat.";
   const heroLead = cfg?.heroText ?? "Cygnus Coaching BV in Genk begeleidt professionals en leidinggevenden met warmte, helderheid en structuur—van stress & burn-out tot loopbaan- en leiderschapscoaching.";
   const values = cfg?.values?.length ? cfg.values : DEFAULT_VALUES;
   const specializations = cfg?.specializations?.length ? cfg.specializations : DEFAULT_SPECIALIZATIONS;
@@ -179,10 +183,18 @@ export default async function HomePage() {
             <h2 className="font-serif text-3xl tracking-tight text-[#1B3A5C]">
               {companyName}
             </h2>
-            <p className="mt-4 text-base leading-7 text-[#1B3A5C]/75">
-              Met een rustige, resultaatgerichte aanpak creëren we ruimte voor
-              helderheid, energie en duurzame verandering.
-            </p>
+            {homeDoc?.content?.length ? (
+              <div className="mt-4 text-base leading-7 text-[#1B3A5C]/75">
+                <PortableText value={homeDoc.content} components={portableTextComponentsSimple} />
+              </div>
+            ) : homeDoc?.introText ? (
+              <p className="mt-4 text-base leading-7 text-[#1B3A5C]/75">{homeDoc.introText}</p>
+            ) : (
+              <p className="mt-4 text-base leading-7 text-[#1B3A5C]/75">
+                Met een rustige, resultaatgerichte aanpak creëren we ruimte voor
+                helderheid, energie en duurzame verandering.
+              </p>
+            )}
           </div>
 
           <div className="md:col-span-7">
