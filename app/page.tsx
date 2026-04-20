@@ -30,6 +30,7 @@ type Settings = {
   values?: string[];
   specializations?: string[];
   partners?: string[];
+  metaDescription?: string;
 };
 
 const homePageQuery = groq`*[_type=="page" && slug.current=="home"][0]{ title, content, introText }`;
@@ -58,7 +59,8 @@ const settingsQuery = groq`*[_type == "settings" && _id == "settings"][0]{
   quote,
   values,
   specializations,
-  partners
+  partners,
+  metaDescription
 }`;
 
 const DEFAULT_VALUES = ["Integriteit", "Vertrouwen", "Respect", "Passie", "Engagement", "Kwaliteit"];
@@ -85,6 +87,7 @@ export default async function HomePage() {
   const companyName = cfg?.companyName ?? "Cygnus Coaching BV";
   const city = cfg?.city ?? "Genk";
   const coachName = cfg?.contactName ?? "Rike Weltjens";
+  const tagline = cfg?.tagline ?? null;
 
   const serviceCards =
     (services as ServiceCard[] | null | undefined)?.slice(0, 3) ?? [];
@@ -98,7 +101,7 @@ export default async function HomePage() {
             <p className="inline-flex w-fit items-center gap-2 rounded-full border border-[#1B3A5C]/15 bg-white/50 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#1B3A5C]/80 backdrop-blur">
               {companyName} · {city}
               <span className="h-1 w-1 rounded-full bg-[#C9A96E]" />
-              {coachName}
+              {tagline ?? coachName}
             </p>
 
             <h1 className="mt-6 font-serif text-4xl leading-tight tracking-tight text-[#1B3A5C] sm:text-5xl">
