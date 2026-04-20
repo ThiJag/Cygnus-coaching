@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import type { PortableTextBlock } from "@portabletext/types";
 import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "../../sanity/lib/live";
-import { portableTextComponentsSimple } from "../../components/portableTextComponents";
+import { portableTextComponents } from "../../components/portableTextComponents";
 
 const pageQuery = groq`
   *[_type == "page" && slug.current == "aanpak"][0]{
@@ -165,7 +165,7 @@ export default async function AanpakPage() {
             <div className="mt-6">
               <PortableText
                 value={doc.content}
-                components={portableTextComponentsSimple}
+                components={portableTextComponents}
               />
             </div>
           ) : (

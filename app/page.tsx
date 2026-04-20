@@ -3,7 +3,7 @@ import { groq } from "next-sanity";
 import type { PortableTextBlock } from "@portabletext/types";
 import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "../sanity/lib/live";
-import { portableTextComponentsSimple } from "../components/portableTextComponents";
+import { portableTextComponents } from "../components/portableTextComponents";
 
 type ServiceCard = {
   _id: string;
@@ -146,7 +146,7 @@ export default async function HomePage() {
               <div className="aspect-[4/5] w-full bg-[linear-gradient(180deg,rgba(27,58,92,0.06),rgba(201,169,110,0.10))]">
                 <div className="flex h-full items-center justify-center px-10 text-center">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-[#1B3A5C]/55">
+                    <!-- <p className="text-xs font-semibold uppercase tracking-wider text-[#1B3A5C]/55">
                       Hero foto
                     </p>
                     <p className="mt-2 font-serif text-2xl text-[#1B3A5C]">
@@ -155,7 +155,8 @@ export default async function HomePage() {
                     <p className="mt-3 text-sm leading-6 text-[#1B3A5C]/70">
                       Vervang door een echte foto via Sanity of{" "}
                       <code className="rounded bg-[#1B3A5C]/10 px-1">public/</code>.
-                    </p>
+                    </p> -->
+                    <img src="https://www.vind-een-coach.be/media/vecbe/siteprofile/images/38169_foto%20240923%20%201.jpg" alt="Rike Weltjens"></img>
                   </div>
                 </div>
               </div>
@@ -188,7 +189,7 @@ export default async function HomePage() {
             </h2>
             {homeDoc?.content?.length ? (
               <div className="mt-4 text-base leading-7 text-[#1B3A5C]/75">
-                <PortableText value={homeDoc.content} components={portableTextComponentsSimple} />
+                <PortableText value={homeDoc.content} components={portableTextComponents} />
               </div>
             ) : homeDoc?.introText ? (
               <p className="mt-4 text-base leading-7 text-[#1B3A5C]/75">{homeDoc.introText}</p>

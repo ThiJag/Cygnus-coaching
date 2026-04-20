@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import type { PortableTextBlock } from "@portabletext/types";
 import { PortableText } from "@portabletext/react";
 import { sanityFetch } from "../../sanity/lib/live";
-import { portableTextComponentsSimple } from "../../components/portableTextComponents";
+import { portableTextComponents } from "../../components/portableTextComponents";
 import { urlFor } from "../../sanity/lib/image";
 
 const pageQuery = groq`
@@ -99,7 +99,7 @@ export default async function OverMijPage() {
             {doc?.content?.length ? (
               <PortableText
                 value={doc.content}
-                components={portableTextComponentsSimple}
+                components={portableTextComponents}
               />
             ) : (
               <p className="text-base leading-7 text-[#1B3A5C]/80">
