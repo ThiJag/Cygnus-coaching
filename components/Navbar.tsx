@@ -52,10 +52,7 @@ export default function Navbar() {
           href="/"
           className="group inline-flex items-baseline gap-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A96E]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F9F7F4]"
         >
-          <span className="font-serif text-xl tracking-tight text-[#1B3A5C]">Cygnus</span>
-          <span className="text-sm font-medium tracking-wide text-[#1B3A5C]/70 group-hover:text-[#1B3A5C]">
-            Coaching BV
-          </span>
+          <img src="https://www.coachinfo.be/images/account_logo/239/image-2016-02-15.jpg" alt="Cygnus Coaching"></img>
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">
