@@ -14,7 +14,7 @@ const testimonialsQuery = groq`
 
 export const metadata: Metadata = {
   title: "Getuigenissen",
-  description: "Ervaringen van coachees—met respect voor vertrouwelijkheid.",
+  description: "Ervaringen van coachees,met respect voor vertrouwelijkheid.",
 };
 
 type T = {

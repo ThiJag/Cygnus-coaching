@@ -41,7 +41,7 @@ export const page = defineType({
       hidden: isSlug('aanpak'),
       of: [{
         type: 'object',
-        fields: [
+fields: [
           {name: 'title', title: 'Staptitel', type: 'string'},
           {name: 'text', title: 'Beschrijving', type: 'text', rows: 3},
         ],
