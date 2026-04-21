@@ -104,7 +104,7 @@ export default async function HomePage() {
             <p className="inline-flex w-fit items-center gap-2 rounded-full border border-[#1B3A5C]/15 bg-white/50 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#1B3A5C]/80 backdrop-blur">
             {/*  {companyName} · {city}*/}
               <span className="h-1 w-1 rounded-full bg-[#C9A96E]" />
-              {tagline ?? coachName}
+              {tagline}
             </p>
 
             <h1 className="mt-6 font-serif text-4xl leading-tight tracking-tight text-[#1B3A5C] sm:text-5xl">

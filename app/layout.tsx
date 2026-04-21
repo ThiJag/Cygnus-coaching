@@ -44,7 +44,7 @@ export default async function RootLayout({
 }>) {
   const { data } = await sanityFetch({ query: settingsMetaQuery });
   const s = data as { companyName?: string; logo?: object } | null;
-  const logoUrl = s?.logo ? urlFor(s.logo).height(72).url() : undefined;
+  const logoUrl = s?.logo ? urlFor(s.logo).height(128).format('png').url() : undefined;
 
   return (
     <html
