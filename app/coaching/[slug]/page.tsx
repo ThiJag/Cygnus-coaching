@@ -4,8 +4,7 @@ import { groq } from "next-sanity";
 import type { Metadata } from "next";
 import type { PortableTextBlock } from "@portabletext/types";
 import { PortableText } from "@portabletext/react";
-import { client } from "../../../sanity/lib/client";
-import { sanityFetch } from "../../../sanity/lib/live";
+import { client, fetchSanity } from "../../../sanity/lib/client";
 import { portableTextComponents } from "../../../components/portableTextComponents";
 
 type ServiceDoc = {
@@ -47,11 +46,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const { data } = await sanityFetch({
-    query: serviceBySlugQuery,
-    params: { slug },
-  });
-  const service = data as ServiceDoc | null;
+  const service = await fetchSanity<ServiceDoc | null>(serviceBySlugQuery, { slug });
   if (!service) return { title: "Coaching" };
   return {
     title: service.name,
@@ -65,11 +60,7 @@ export default async function CoachingServicePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { data } = await sanityFetch({
-    query: serviceBySlugQuery,
-    params: { slug },
-  });
-  const service = data as ServiceDoc | null;
+  const service = await fetchSanity<ServiceDoc | null>(serviceBySlugQuery, { slug });
   if (!service) notFound();
 
   return (

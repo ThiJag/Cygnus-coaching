@@ -2,7 +2,7 @@ import Link from "next/link";
 import { groq } from "next-sanity";
 import type { PortableTextBlock } from "@portabletext/types";
 import { PortableText } from "@portabletext/react";
-import { sanityFetch } from "../sanity/lib/live";
+import { fetchSanity } from "../sanity/lib/client";
 import { urlFor } from "../sanity/lib/image";
 import { portableTextComponents } from "../components/portableTextComponents";
 
@@ -71,23 +71,22 @@ const DEFAULT_SPECIALIZATIONS = ["ICF-geïnspireerd", "NLP", "Stress & Burn-out"
 const DEFAULT_PARTNERS = ["Loopbaancheque", "CERTO", "WSE"];
 
 export default async function HomePage() {
-  const [{ data: home }, { data: services }, { data: testimonials }, { data: settingsData }] =
-    await Promise.all([
-      sanityFetch({ query: homePageQuery }),
-      sanityFetch({ query: servicesQuery }),
-      sanityFetch({ query: testimonialsQuery }),
-      sanityFetch({ query: settingsQuery }),
-    ]);
+  const [home, services, testimonials, settingsData] = await Promise.all([
+    fetchSanity(homePageQuery),
+    fetchSanity(servicesQuery),
+    fetchSanity(testimonialsQuery),
+    fetchSanity(settingsQuery),
+  ]);
 
   const cfg = settingsData as Settings | null;
   const homeDoc = home as { title?: string; content?: PortableTextBlock[]; introText?: string } | null;
   const heroTitle = homeDoc?.title ?? "Rust. Richting. Resultaat.";
-  const heroLead = cfg?.heroText ?? "Cygnus Coaching BV in Genk begeleidt professionals en leidinggevenden met warmte, helderheid en structuur—van stress & burn-out tot loopbaan- en leiderschapscoaching.";
+  const heroLead = cfg?.heroText ?? "Cygnus Coaching in Genk begeleidt professionals en leidinggevenden met warmte, helderheid en structuur—van stress & burn-out tot loopbaan- en leiderschapscoaching.";
   const values = cfg?.values?.length ? cfg.values : DEFAULT_VALUES;
   const specializations = cfg?.specializations?.length ? cfg.specializations : DEFAULT_SPECIALIZATIONS;
   const partners = cfg?.partners?.length ? cfg.partners : DEFAULT_PARTNERS;
   const quote = cfg?.quote ?? "Warm menselijk contact, scherpe vragen, en concrete stappen.";
-  const companyName = cfg?.companyName ?? "Cygnus Coaching BV";
+  const companyName = cfg?.companyName ?? "Cygnus Coaching";
   const city = cfg?.city ?? "Genk";
   const coachName = cfg?.contactName ?? "Rike Weltjens";
   const tagline = cfg?.tagline ?? "Groei door inzicht - Kracht door coaching";

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { groq } from "next-sanity";
 import Navbar from "../components/Navbar";
-import { sanityFetch, SanityLive } from "../sanity/lib/live";
+import { fetchSanity } from "../sanity/lib/client";
+import { SanityLive } from "../sanity/lib/live";
 import { urlFor } from "../sanity/lib/image";
 import "./globals.css";
 
@@ -23,9 +24,8 @@ const settingsMetaQuery = groq`*[_type == "settings" && _id == "settings"][0]{
 }`;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { data } = await sanityFetch({ query: settingsMetaQuery });
-  const s = data as { companyName?: string; metaDescription?: string } | null;
-  const name = s?.companyName ?? "Cygnus Coaching BV";
+  const s = await fetchSanity<{ companyName?: string; metaDescription?: string } | null>(settingsMetaQuery);
+  const name = s?.companyName ?? "Cygnus Coaching";
   return {
     title: {
       default: name,
@@ -42,8 +42,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data } = await sanityFetch({ query: settingsMetaQuery });
-  const s = data as { companyName?: string; logo?: object } | null;
+  const s = await fetchSanity<{ companyName?: string; logo?: object } | null>(settingsMetaQuery);
   const logoUrl = s?.logo ? urlFor(s.logo).height(128).format('png').url() : undefined;
 
   return (

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { groq } from "next-sanity";
-import { sanityFetch } from "../../sanity/lib/live";
+import { fetchSanity } from "../../sanity/lib/client";
 import ContactForm from "./ContactForm";
 
 const settingsQuery = groq`*[_type == "settings" && _id == "settings"][0]{
@@ -20,8 +20,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
-  const { data } = await sanityFetch({ query: settingsQuery });
-  const s = data as {
+  const s = await fetchSanity<{
     contactName?: string;
     companyName?: string;
     postalCode?: string;
@@ -30,7 +29,7 @@ export default async function ContactPage() {
     phone?: string;
     email?: string;
     btwNummer?: string;
-  } | null;
+  } | null>(settingsQuery);
 
   const phone = s?.phone ?? "+32 496 10 55 73";
   const telHref = `tel:${phone.replace(/\s/g, "")}`;

@@ -1,6 +1,6 @@
 import { groq } from "next-sanity";
 import type { Metadata } from "next";
-import { sanityFetch } from "../../sanity/lib/live";
+import { fetchSanity } from "../../sanity/lib/client";
 
 const testimonialsQuery = groq`
   *[_type == "testimonial"] | order(_createdAt desc) {
@@ -26,8 +26,7 @@ type T = {
 };
 
 export default async function GetuigenissenPage() {
-  const { data } = await sanityFetch({ query: testimonialsQuery });
-  const list = (data as T[] | null) ?? [];
+  const list = (await fetchSanity<T[] | null>(testimonialsQuery)) ?? [];
 
   return (
     <div className="bg-[#F9F7F4]">

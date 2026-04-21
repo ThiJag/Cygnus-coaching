@@ -4,7 +4,7 @@ import { groq } from "next-sanity";
 import type { Metadata } from "next";
 import type { PortableTextBlock } from "@portabletext/types";
 import { PortableText } from "@portabletext/react";
-import { sanityFetch } from "../../sanity/lib/live";
+import { fetchSanity } from "../../sanity/lib/client";
 import { portableTextComponents } from "../../components/portableTextComponents";
 import { urlFor } from "../../sanity/lib/image";
 
@@ -38,8 +38,7 @@ type OverMijDoc = {
 const DEFAULT_CREDENTIALS = ["ICF ACC", "NLP master", "Stress & burn-out certificaat"];
 
 export default async function OverMijPage() {
-  const { data } = await sanityFetch({ query: pageQuery });
-  const doc = data as OverMijDoc | null;
+  const doc = await fetchSanity<OverMijDoc | null>(pageQuery);
 
   const introText = doc?.introText ?? "Rike Weltjens — gecertificeerd ICF-coach, met meer dan 20 jaar ervaring in begeleiding en ontwikkeling.";
   const credentials = doc?.credentials?.length ? doc.credentials : DEFAULT_CREDENTIALS;

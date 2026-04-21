@@ -3,7 +3,7 @@ import { groq } from "next-sanity";
 import type { Metadata } from "next";
 import type { PortableTextBlock } from "@portabletext/types";
 import { PortableText } from "@portabletext/react";
-import { sanityFetch } from "../../sanity/lib/live";
+import { fetchSanity } from "../../sanity/lib/client";
 import { portableTextComponents } from "../../components/portableTextComponents";
 
 const pageQuery = groq`
@@ -106,8 +106,7 @@ function IcebergSvg() {
 }
 
 export default async function AanpakPage() {
-  const { data } = await sanityFetch({ query: pageQuery });
-  const doc = data as AanpakDoc | null;
+  const doc = await fetchSanity<AanpakDoc | null>(pageQuery);
 
   const steps = doc?.processSteps?.length ? doc.processSteps : DEFAULT_STEPS;
   const introText = doc?.introText ?? "Een doorlopende lijn van intake tot integratie; rustig tempo, duidelijke structuur.";
