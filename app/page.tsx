@@ -90,7 +90,7 @@ export default async function HomePage() {
   const companyName = cfg?.companyName ?? "Cygnus Coaching BV";
   const city = cfg?.city ?? "Genk";
   const coachName = cfg?.contactName ?? "Rike Weltjens";
-  const tagline = cfg?.tagline ?? null;
+  const tagline = cfg?.tagline ?? "Groei door inzicht. Kracht door coaching.";
 
   const serviceCards =
     (services as ServiceCard[] | null | undefined)?.slice(0, 3) ?? [];
@@ -146,18 +146,14 @@ export default async function HomePage() {
           <div className="relative">
             <div className="absolute -inset-4 rounded-[2rem] bg-[linear-gradient(135deg,rgba(201,169,110,0.35),rgba(27,58,92,0.25))] blur-2xl" />
             <div className="relative overflow-hidden rounded-[2rem] border border-[#1B3A5C]/10 bg-white shadow-2xl shadow-[#1B3A5C]/10">
-              <div className="aspect-[4/5] w-full bg-[linear-gradient(180deg,rgba(27,58,92,0.06),rgba(201,169,110,0.10))]">
-                <div className="flex h-full items-center justify-center px-10 text-center">
-                  <div>
-                   <img
-                      src={cfg?.heroPhoto
-                        ? urlFor(cfg.heroPhoto).width(600).url()
-                        : "https://www.vind-een-coach.be/media/vecbe/siteprofile/images/38169_foto%20240923%20%201.jpg"}
-                      alt="Rike Weltjens"
-                      className="w-full h-auto object-cover"
-                    />
-                  </div>
-                </div>
+              <div className="relative aspect-[4/5] w-full">
+                <img
+                  src={cfg?.heroPhoto
+                    ? urlFor(cfg.heroPhoto).width(800).url()
+                    : "https://www.vind-een-coach.be/media/vecbe/siteprofile/images/38169_foto%20240923%20%201.jpg"}
+                  alt="Rike Weltjens"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
               </div>
 
               <div className="border-t border-[#1B3A5C]/10 bg-[#F9F7F4] px-6 py-5">
