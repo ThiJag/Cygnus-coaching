@@ -90,7 +90,7 @@ export default async function HomePage() {
   const companyName = cfg?.companyName ?? "Cygnus Coaching BV";
   const city = cfg?.city ?? "Genk";
   const coachName = cfg?.contactName ?? "Rike Weltjens";
-  const tagline = cfg?.tagline ?? "Groei door inzicht. Kracht door coaching.";
+  const tagline = cfg?.tagline ?? "Groei door inzicht - Kracht door coaching";
 
   const serviceCards =
     (services as ServiceCard[] | null | undefined)?.slice(0, 3) ?? [];
@@ -105,6 +105,7 @@ export default async function HomePage() {
             {/*  {companyName} · {city}*/}
               <span className="h-1 w-1 rounded-full bg-[#C9A96E]" />
               {tagline}
+              <span className="h-1 w-1 rounded-full bg-[#C9A96E]" />
             </p>
 
             <h1 className="mt-6 font-serif text-4xl leading-tight tracking-tight text-[#1B3A5C] sm:text-5xl">
