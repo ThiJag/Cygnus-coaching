@@ -19,7 +19,7 @@ const pageQuery = groq`
 
 export const metadata: Metadata = {
   title: "Aanpak",
-  description: "Intake, coaching en opvolging — helder en persoonlijk.",
+  description: "Intake, coaching en opvolging, helder en persoonlijk.",
 };
 
 type ProcessStep = { title?: string; text?: string };
@@ -110,7 +110,7 @@ export default async function AanpakPage() {
   const doc = data as AanpakDoc | null;
 
   const steps = doc?.processSteps?.length ? doc.processSteps : DEFAULT_STEPS;
-  const introText = doc?.introText ?? "Een doorlopende lijn van intake tot integratie—rustig tempo, duidelijke structuur.";
+  const introText = doc?.introText ?? "Een doorlopende lijn van intake tot integratie; rustig tempo, duidelijke structuur.";
   const icebergText = doc?.icebergText ?? "Boven de waterlijn: wat anderen zien. Onder de waterlijn: motieven, overtuigingen en patronen die gedrag sturen. Coaching richt zich bewust op beide lagen.";
   const trajectInfo = doc?.trajectInfo ?? "Typisch traject: 6 sessies. Voor een passend voorstel en prijs: neem vrijblijvend contact op.";
 
