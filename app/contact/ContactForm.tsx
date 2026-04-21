@@ -19,6 +19,7 @@ const interests = [
 export default function ContactForm({ email }: { email?: string }) {
   const formRef = useRef<HTMLFormElement>(null);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [errorDetail, setErrorDetail] = useState<string>("");
   const [loadTime] = useState(() => Date.now());
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -39,11 +40,15 @@ export default function ContactForm({ email }: { email?: string }) {
 
     setStatus("sending");
     try {
-      await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current!, PUBLIC_KEY);
+      await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current!, { publicKey: PUBLIC_KEY });
       setStatus("sent");
       formRef.current?.reset();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("[ContactForm] EmailJS error:", err);
+      const detail = err && typeof err === "object" && "text" in err
+        ? String((err as { text: unknown }).text)
+        : String(err);
+      setErrorDetail(detail);
       setStatus("error");
     }
   }
@@ -130,6 +135,7 @@ export default function ContactForm({ email }: { email?: string }) {
           Er is iets misgegaan. Probeer het opnieuw{email ? (
             <> of <a href={`mailto:${email}`} className="underline">{email}</a></>
           ) : " of stuur een e-mail rechtstreeks"}.
+          {errorDetail && <span className="block mt-1 text-xs opacity-70">Fout: {errorDetail}</span>}
         </p>
       )}
     </form>
