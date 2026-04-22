@@ -1,6 +1,8 @@
 "use client";
 
 import emailjs from "@emailjs/browser";
+// ✅ NIEUW: reCAPTCHA hook importeren
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useRef, useState } from "react";
 
 const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!;
@@ -21,20 +23,40 @@ export default function ContactForm({ email }: { email?: string }) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errorDetail, setErrorDetail] = useState<string>("");
   const [loadTime] = useState(() => Date.now());
+  // ✅ NIEUW: reCAPTCHA hook
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    // Honeypot: bots vullen dit verborgen veld in
     const honeypot = (e.currentTarget.elements.namedItem("_website") as HTMLInputElement)?.value;
     if (honeypot) {
       setStatus("sent");
       return;
     }
 
-    // Timing check: geen mens vult een formulier in onder 2 seconden
     if (Date.now() - loadTime < 2000) {
       setStatus("sent");
+      return;
+    }
+
+    // ✅ NIEUW: reCAPTCHA token ophalen
+    if (!executeRecaptcha) {
+      setStatus("error");
+      setErrorDetail("reCAPTCHA niet beschikbaar");
+      return;
+    }
+    const token = await executeRecaptcha("contact_form");
+
+    // ✅ NIEUW: token verifiëren via onze API route
+    const verifyRes = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    });
+    if (!verifyRes.ok) {
+      setStatus("error");
+      setErrorDetail("Verificatie mislukt. Probeer het opnieuw.");
       return;
     }
 
@@ -52,6 +74,11 @@ export default function ContactForm({ email }: { email?: string }) {
       setStatus("error");
     }
   }
+
+  return (
+    // ... rest van de JSX blijft volledig ongewijzigd
+  );
+}
 
   return (
     <form
