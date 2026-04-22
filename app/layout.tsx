@@ -1,7 +1,7 @@
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { groq } from "next-sanity";
+import Providers from "./Providers";
 import Navbar from "../components/Navbar";
 import { fetchSanity } from "../sanity/lib/client";
 import { SanityLive } from "../sanity/lib/live";
@@ -53,9 +53,9 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[#F9F7F4] font-sans text-[#0F172A]">
         <Navbar logoUrl={logoUrl} />
-        <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}>
+        <Providers>
           <main className="flex-1">{children}</main>
-        </GoogleReCaptchaProvider>
+        </Providers>
         <SanityLive />
       </body>
     </html>
