@@ -138,7 +138,7 @@ export default async function CoachingServicePage({
             {slug === "loopbaanbegeleiding" && (
               <div className="overflow-hidden rounded-2xl">
                 <Image
-                  src="/images/loopbaancheque-vdab.png"
+                  src="/images/loopbaancheque-vdab.jpg"
                   alt="Loopbaancheque – verkrijgbaar via VDAB"
                   width={600}
                   height={200}
