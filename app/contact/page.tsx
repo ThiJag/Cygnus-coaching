@@ -42,7 +42,7 @@ export default async function ContactPage() {
             Contact
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-[#1B3A5C]/75">
-            Een eerste gesprek verplicht tot niets,wel tot helderheid over wat
+            Een eerste telefonische intake verplicht tot niets,wel tot helderheid over wat
             je nodig hebt.
           </p>
         </div>
