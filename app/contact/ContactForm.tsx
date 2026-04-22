@@ -22,7 +22,7 @@ export default function ContactForm({ email }: { email?: string }) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errorDetail, setErrorDetail] = useState<string>("");
   const [loadTime] = useState(() => Date.now());
-const { executeRecaptcha } = useGoogleReCaptcha();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -38,14 +38,14 @@ const { executeRecaptcha } = useGoogleReCaptcha();
       return;
     }
 
-if (!executeRecaptcha) {
+    if (!executeRecaptcha) {
       setStatus("error");
       setErrorDetail("reCAPTCHA niet beschikbaar");
       return;
     }
     const token = await executeRecaptcha("contact_form");
 
-const verifyRes = await fetch("/api/contact", {
+    const verifyRes = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token }),
