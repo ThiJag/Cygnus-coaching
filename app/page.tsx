@@ -91,8 +91,21 @@ export default async function HomePage() {
   const coachName = cfg?.contactName ?? "Rike Weltjens";
   const tagline = cfg?.tagline ?? "Groei door inzicht - Kracht door coaching";
 
-  const serviceCards =
-    (services as ServiceCard[] | null | undefined)?.slice(0, 3) ?? [];
+  const SERVICE_ORDER = [
+    "stress",
+    "loopbaan",
+    "leiderschap",
+    "life",
+  ];
+
+  const allServices = (services as ServiceCard[] | null | undefined) ?? [];
+  const serviceCards = [...allServices]
+    .sort((a, b) => {
+      const ai = SERVICE_ORDER.findIndex((k) => a.slug.current.includes(k));
+      const bi = SERVICE_ORDER.findIndex((k) => b.slug.current.includes(k));
+      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    })
+    .slice(0, 4);
 
   return (
     <div className="flex flex-col bg-[#F9F7F4]">
@@ -204,16 +217,6 @@ export default async function HomePage() {
               <p className="mt-3 font-serif text-2xl leading-snug text-[#1B3A5C]">
                 {quote}
               </p>
-              <div className="mt-6 flex flex-wrap gap-2">
-                {specializations.map((t) => (
-                  <span
-                    key={t}
-                    className="rounded-full border border-[#1B3A5C]/15 bg-[#F9F7F4] px-4 py-2 text-xs font-semibold text-[#1B3A5C]/80"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
             </div>
           </div>
         </div>
@@ -238,7 +241,7 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {serviceCards.length > 0 ? (
             serviceCards.map((svc) => (
               <Link
@@ -265,7 +268,7 @@ export default async function HomePage() {
               </Link>
             ))
           ) : (
-            <div className="rounded-2xl border border-[#1B3A5C]/10 bg-white p-6 text-sm text-[#1B3A5C]/75 md:col-span-3">
+            <div className="rounded-2xl border border-[#1B3A5C]/10 bg-white p-6 text-sm text-[#1B3A5C]/75 sm:col-span-2 lg:col-span-4">
               Voeg in Sanity minstens één document toe van type{" "}
               <span className="font-semibold text-[#1B3A5C]">Dienst</span> met
               slug (bv. stress-en-burn-out).
