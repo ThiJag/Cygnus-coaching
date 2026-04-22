@@ -241,7 +241,7 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
           {serviceCards.length > 0 ? (
             serviceCards.map((svc) => (
               <Link
@@ -268,7 +268,7 @@ export default async function HomePage() {
               </Link>
             ))
           ) : (
-            <div className="rounded-2xl border border-[#1B3A5C]/10 bg-white p-6 text-sm text-[#1B3A5C]/75 sm:col-span-2 lg:col-span-4">
+            <div className="rounded-2xl border border-[#1B3A5C]/10 bg-white p-6 text-sm text-[#1B3A5C]/75 md:col-span-2">
               Voeg in Sanity minstens één document toe van type{" "}
               <span className="font-semibold text-[#1B3A5C]">Dienst</span> met
               slug (bv. stress-en-burn-out).
