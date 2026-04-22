@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { groq } from "next-sanity";
@@ -133,6 +134,18 @@ export default async function CoachingServicePage({
                 </ul>
               </div>
             ) : null}
+
+            {slug === "loopbaanbegeleiding" && (
+              <div className="overflow-hidden rounded-2xl">
+                <Image
+                  src="/images/loopbaancheque-vdab.png"
+                  alt="Loopbaancheque – verkrijgbaar via VDAB"
+                  width={600}
+                  height={200}
+                  className="w-full"
+                />
+              </div>
+            )}
 
             <div className="rounded-2xl border border-[#1B3A5C]/10 bg-[#F9F7F4] p-6">
               <p className="text-sm font-semibold text-[#1B3A5C]">
