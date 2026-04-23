@@ -25,8 +25,9 @@ const settingsMetaQuery = groq`*[_type == "settings" && _id == "settings"][0]{
 }`;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const s = await fetchSanity<{ companyName?: string; metaDescription?: string } | null>(settingsMetaQuery);
+  const s = await fetchSanity<{ companyName?: string; metaDescription?: string; logo?: object } | null>(settingsMetaQuery);
   const name = s?.companyName ?? "Cygnus Coaching";
+  const faviconUrl = s?.logo ? urlFor(s.logo).width(64).height(64).format('png').url() : undefined;
   return {
     title: {
       default: name,
@@ -35,6 +36,13 @@ export async function generateMetadata(): Promise<Metadata> {
     description:
       s?.metaDescription ??
       "Professionele coaching in Genk door Rike Weltjens — stress & burn-out, loopbaan, leiderschap en life coaching.",
+    ...(faviconUrl && {
+      icons: {
+        icon: faviconUrl,
+        shortcut: faviconUrl,
+        apple: faviconUrl,
+      },
+    }),
   };
 }
 
