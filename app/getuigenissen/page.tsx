@@ -48,7 +48,7 @@ export default async function GetuigenissenPage() {
                   Getuigenissen
                 </h1>
                 <p className="mt-4 text-lg text-[#1B3A5C]/75">
-                  Elke situatie is uniek. Hieronder een selectie van feedback—altijd
+                  Elke situatie is uniek. Hieronder een selectie van feedback, altijd
                   met oog voor vertrouwelijkheid.
                 </p>
                 <div className="mt-6 rounded-xl border border-[#1B3A5C]/15 bg-white/70 px-4 py-3 text-sm text-[#1B3A5C]/75">
