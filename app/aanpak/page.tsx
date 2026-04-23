@@ -129,7 +129,7 @@ export default async function AanpakPage() {
                 </h1>
                 <p className="mt-4 text-lg text-[#1B3A5C]/75">{introText}</p>
               </div>
-              <div className="w-[90%] mx-auto">
+              <div className="w-[81%] mx-auto">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg">
                   <Image
                     src={urlFor(doc.photo).width(800).url()}

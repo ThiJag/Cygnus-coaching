@@ -95,7 +95,7 @@ export default async function CoachingServicePage({
                   </p>
                 ) : null}
               </div>
-              <div className="w-[90%] mx-auto">
+              <div className="w-[81%] mx-auto">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg">
                   <Image
                     src={urlFor(service.photo).width(800).url()}
