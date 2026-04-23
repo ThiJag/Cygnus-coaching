@@ -7,6 +7,7 @@ import type { PortableTextBlock } from "@portabletext/types";
 import { PortableText } from "@portabletext/react";
 import { client, fetchSanity } from "../../../sanity/lib/client";
 import { portableTextComponents } from "../../../components/portableTextComponents";
+import { urlFor } from "../../../sanity/lib/image";
 
 type ServiceDoc = {
   _id: string;
@@ -15,6 +16,7 @@ type ServiceDoc = {
   description?: string;
   themes?: string[];
   result?: PortableTextBlock[];
+  photo?: Record<string, unknown> | null;
 };
 
 const serviceBySlugQuery = groq`
@@ -24,7 +26,8 @@ const serviceBySlugQuery = groq`
     slug,
     description,
     themes,
-    result
+    result,
+    photo
   }
 `;
 
@@ -80,14 +83,40 @@ export default async function CoachingServicePage({
             <span className="mx-2">/</span>
             <span className="font-medium text-[#1B3A5C]">{service.name}</span>
           </nav>
-          <h1 className="mt-6 max-w-3xl font-serif text-4xl tracking-tight text-[#1B3A5C] sm:text-5xl">
-            {service.name}
-          </h1>
-          {service.description ? (
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-[#1B3A5C]/75">
-              {service.description}
-            </p>
-          ) : null}
+          {service.photo ? (
+            <div className="mt-6 grid items-center gap-10 md:grid-cols-2">
+              <div>
+                <h1 className="font-serif text-4xl tracking-tight text-[#1B3A5C] sm:text-5xl">
+                  {service.name}
+                </h1>
+                {service.description ? (
+                  <p className="mt-5 text-lg leading-8 text-[#1B3A5C]/75">
+                    {service.description}
+                  </p>
+                ) : null}
+              </div>
+              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg">
+                <Image
+                  src={urlFor(service.photo).width(800).url()}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+            </div>
+          ) : (
+            <>
+              <h1 className="mt-6 max-w-3xl font-serif text-4xl tracking-tight text-[#1B3A5C] sm:text-5xl">
+                {service.name}
+              </h1>
+              {service.description ? (
+                <p className="mt-5 max-w-2xl text-lg leading-8 text-[#1B3A5C]/75">
+                  {service.description}
+                </p>
+              ) : null}
+            </>
+          )}
         </div>
       </section>
 

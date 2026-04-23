@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { groq } from "next-sanity";
 import type { Metadata } from "next";
@@ -5,6 +6,7 @@ import type { PortableTextBlock } from "@portabletext/types";
 import { PortableText } from "@portabletext/react";
 import { fetchSanity } from "../../sanity/lib/client";
 import { portableTextComponents } from "../../components/portableTextComponents";
+import { urlFor } from "../../sanity/lib/image";
 
 const pageQuery = groq`
   *[_type == "page" && slug.current == "aanpak"][0]{
@@ -13,7 +15,8 @@ const pageQuery = groq`
     introText,
     processSteps,
     trajectInfo,
-    icebergText
+    icebergText,
+    photo
   }
 `;
 
@@ -31,6 +34,7 @@ type AanpakDoc = {
   processSteps?: ProcessStep[];
   trajectInfo?: string;
   icebergText?: string;
+  photo?: Record<string, unknown> | null;
 };
 
 const DEFAULT_STEPS: ProcessStep[] = [
@@ -117,12 +121,32 @@ export default async function AanpakPage() {
     <div className="bg-[#F9F7F4]">
       <section className="border-b border-[#1B3A5C]/10">
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
-          <h1 className="font-serif text-4xl tracking-tight text-[#1B3A5C] sm:text-5xl">
-            {doc?.title ?? "Aanpak"}
-          </h1>
-          <p className="mt-4 max-w-2xl text-lg text-[#1B3A5C]/75">
-            {introText}
-          </p>
+          {doc?.photo ? (
+            <div className="grid items-center gap-10 md:grid-cols-2">
+              <div>
+                <h1 className="font-serif text-4xl tracking-tight text-[#1B3A5C] sm:text-5xl">
+                  {doc?.title ?? "Aanpak"}
+                </h1>
+                <p className="mt-4 text-lg text-[#1B3A5C]/75">{introText}</p>
+              </div>
+              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg">
+                <Image
+                  src={urlFor(doc.photo).width(800).url()}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+            </div>
+          ) : (
+            <>
+              <h1 className="font-serif text-4xl tracking-tight text-[#1B3A5C] sm:text-5xl">
+                {doc?.title ?? "Aanpak"}
+              </h1>
+              <p className="mt-4 max-w-2xl text-lg text-[#1B3A5C]/75">{introText}</p>
+            </>
+          )}
         </div>
       </section>
 

@@ -87,7 +87,8 @@ fields: [
       name: 'photo',
       title: 'Foto',
       type: 'image',
-      hidden: isSlug('over-mij'),
+      hidden: ({document}: any) =>
+        !['over-mij', 'aanpak', 'getuigenissen'].includes(document?.slug?.current),
       options: {hotspot: true},
     }),
   ],

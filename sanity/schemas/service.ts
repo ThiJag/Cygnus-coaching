@@ -42,6 +42,12 @@ export const service = defineType({
       of: [{type: 'string'}],
     }),
     defineField({
+      name: 'photo',
+      title: 'Foto',
+      type: 'image',
+      options: {hotspot: true},
+    }),
+    defineField({
       name: 'result',
       title: 'Inhoud / resultaat',
       type: 'array',
