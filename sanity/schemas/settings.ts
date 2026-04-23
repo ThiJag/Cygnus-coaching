@@ -20,6 +20,13 @@ export const settings = defineType({
       options: {hotspot: true},
     }),
     defineField({
+      name: 'getuigenissenPhoto',
+      title: 'Foto (getuigenissen-pagina)',
+      type: 'image',
+      description: 'Foto rechts naast de intro op de pagina /getuigenissen',
+      options: {hotspot: true},
+    }),
+    defineField({
       name: 'companyName',
       title: 'Bedrijfsnaam',
       type: 'string',

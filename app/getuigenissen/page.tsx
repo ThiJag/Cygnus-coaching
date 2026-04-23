@@ -14,8 +14,8 @@ const testimonialsQuery = groq`
   }
 `;
 
-const pageQuery = groq`
-  *[_type == "page" && slug.current == "getuigenissen"][0]{ photo }
+const settingsQuery = groq`
+  *[_type == "settings"][0]{ getuigenissenPhoto }
 `;
 
 export const metadata: Metadata = {
@@ -32,16 +32,16 @@ type T = {
 };
 
 export default async function GetuigenissenPage() {
-  const [list, pageDoc] = await Promise.all([
+  const [list, settings] = await Promise.all([
     fetchSanity<T[] | null>(testimonialsQuery).then((r) => r ?? []),
-    fetchSanity<{ photo?: Record<string, unknown> | null } | null>(pageQuery),
+    fetchSanity<{ getuigenissenPhoto?: Record<string, unknown> | null } | null>(settingsQuery),
   ]);
 
   return (
     <div className="bg-[#F9F7F4]">
       <section className="border-b border-[#1B3A5C]/10">
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
-          {pageDoc?.photo ? (
+          {settings?.getuigenissenPhoto ? (
             <div className="grid items-center gap-10 md:grid-cols-2">
               <div>
                 <h1 className="font-serif text-4xl tracking-tight text-[#1B3A5C] sm:text-5xl">
@@ -62,7 +62,7 @@ export default async function GetuigenissenPage() {
               <div className="w-[81%] mx-auto">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg">
                   <Image
-                    src={urlFor(pageDoc.photo).width(800).url()}
+                    src={urlFor(settings.getuigenissenPhoto).width(800).url()}
                     alt=""
                     fill
                     className="object-cover"
