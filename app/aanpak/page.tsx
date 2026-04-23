@@ -129,14 +129,16 @@ export default async function AanpakPage() {
                 </h1>
                 <p className="mt-4 text-lg text-[#1B3A5C]/75">{introText}</p>
               </div>
-              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg">
-                <Image
-                  src={urlFor(doc.photo).width(800).url()}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
+              <div className="w-[90%] mx-auto">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg">
+                  <Image
+                    src={urlFor(doc.photo).width(800).url()}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 90vw, 45vw"
+                  />
+                </div>
               </div>
             </div>
           ) : (

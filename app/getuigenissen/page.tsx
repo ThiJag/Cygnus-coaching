@@ -59,14 +59,16 @@ export default async function GetuigenissenPage() {
                   worden aangepast om anonimiteit te waarborgen.
                 </div>
               </div>
-              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg">
-                <Image
-                  src={urlFor(pageDoc.photo).width(800).url()}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
+              <div className="w-[90%] mx-auto">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg">
+                  <Image
+                    src={urlFor(pageDoc.photo).width(800).url()}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 90vw, 45vw"
+                  />
+                </div>
               </div>
             </div>
           ) : (
