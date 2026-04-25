@@ -128,12 +128,13 @@ export default async function AanpakPage() {
             </p>
           </div>
           {doc?.icebergPhoto && (
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+            <div className="overflow-hidden rounded-2xl">
               <Image
                 src={urlFor(doc.icebergPhoto).width(800).url()}
                 alt="Competentiemodel"
-                fill
-                className="object-cover"
+                width={800}
+                height={600}
+                className="h-auto w-full object-contain"
                 sizes="(max-width: 768px) 90vw, 45vw"
               />
             </div>
