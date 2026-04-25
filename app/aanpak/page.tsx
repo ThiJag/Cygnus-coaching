@@ -175,7 +175,7 @@ export default async function AanpakPage() {
         <div className="mt-14 grid gap-10 rounded-3xl border border-[#1B3A5C]/10 bg-white p-8 shadow-lg shadow-[#1B3A5C]/5 md:grid-cols-2 md:p-10">
           <div>
             <h2 className="font-serif text-2xl text-[#1B3A5C]">
-              IJsbergmodel (McClelland)
+              Competentiemodel
             </h2>
             <p className="mt-3 text-sm leading-6 text-[#1B3A5C]/75">
               {icebergText}
