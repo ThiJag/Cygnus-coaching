@@ -64,6 +64,14 @@ fields: [
       hidden: isSlug('aanpak'),
     }),
     defineField({
+      name: 'icebergPhoto',
+      title: 'Competentiemodel — foto',
+      type: 'image',
+      hidden: isSlug('aanpak'),
+      options: {hotspot: true},
+      description: 'Foto rechts naast de competentiemodel-tekst',
+    }),
+    defineField({
       name: 'credentials',
       title: 'Certificaten & opleidingen',
       type: 'array',

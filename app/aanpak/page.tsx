@@ -16,6 +16,7 @@ const pageQuery = groq`
     processSteps,
     trajectInfo,
     icebergText,
+    icebergPhoto,
     photo
   }
 `;
@@ -34,6 +35,7 @@ type AanpakDoc = {
   processSteps?: ProcessStep[];
   trajectInfo?: string;
   icebergText?: string;
+  icebergPhoto?: Record<string, unknown> | null;
   photo?: Record<string, unknown> | null;
 };
 
@@ -52,62 +54,6 @@ const DEFAULT_STEPS: ProcessStep[] = [
   },
 ];
 
-function IcebergSvg() {
-  return (
-    <svg
-      viewBox="0 0 400 280"
-      className="h-auto w-full max-w-md"
-      aria-hidden
-    >
-      <defs>
-        <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#1B3A5C" stopOpacity="0.12" />
-          <stop offset="100%" stopColor="#1B3A5C" stopOpacity="0.35" />
-        </linearGradient>
-      </defs>
-      <rect x="0" y="140" width="400" height="140" fill="url(#water)" rx="8" />
-      <line
-        x1="0"
-        y1="140"
-        x2="400"
-        y2="140"
-        stroke="#C9A96E"
-        strokeWidth="2"
-        strokeDasharray="6 4"
-      />
-      <text
-        x="200"
-        y="128"
-        textAnchor="middle"
-        className="fill-[#1B3A5C] text-[11px] font-semibold"
-      >
-        Waterlijn — zichtbaar gedrag
-      </text>
-      <path d="M200 20 L320 140 L80 140 Z" fill="#1B3A5C" fillOpacity="0.9" />
-      <path
-        d="M200 50 L280 140 L120 140 Z"
-        fill="#C9A96E"
-        fillOpacity="0.35"
-      />
-      <text
-        x="200"
-        y="95"
-        textAnchor="middle"
-        className="fill-[#F9F7F4] text-[10px] font-medium"
-      >
-        Motieven · waarden · drijfveren
-      </text>
-      <text
-        x="200"
-        y="200"
-        textAnchor="middle"
-        className="fill-[#1B3A5C] text-[10px] opacity-80"
-      >
-        McClelland ijsberg — onderstroom bepaalt koers
-      </text>
-    </svg>
-  );
-}
 
 export default async function AanpakPage() {
   const doc = await fetchSanity<AanpakDoc | null>(pageQuery);
@@ -172,7 +118,7 @@ export default async function AanpakPage() {
           ))}
         </ol>
 
-        <div className="mt-14 grid gap-10 rounded-3xl border border-[#1B3A5C]/10 bg-white p-8 shadow-lg shadow-[#1B3A5C]/5 md:grid-cols-2 md:p-10">
+        <div className={`mt-14 grid gap-10 rounded-3xl border border-[#1B3A5C]/10 bg-white p-8 shadow-lg shadow-[#1B3A5C]/5 md:p-10${doc?.icebergPhoto ? " md:grid-cols-2" : ""}`}>
           <div>
             <h2 className="font-serif text-2xl text-[#1B3A5C]">
               Competentiemodel
@@ -181,7 +127,17 @@ export default async function AanpakPage() {
               {icebergText}
             </p>
           </div>
-          <IcebergSvg />
+          {doc?.icebergPhoto && (
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+              <Image
+                src={urlFor(doc.icebergPhoto).width(800).url()}
+                alt="Competentiemodel"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 90vw, 45vw"
+              />
+            </div>
+          )}
         </div>
 
         <div className="mt-14 rounded-2xl border border-[#1B3A5C]/10 bg-white p-6 shadow-lg shadow-[#1B3A5C]/5 sm:p-8">
