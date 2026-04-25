@@ -123,9 +123,11 @@ export default async function AanpakPage() {
             <h2 className="font-serif text-2xl text-[#1B3A5C]">
               Competentiemodel
             </h2>
-            <p className="mt-3 text-sm leading-6 text-[#1B3A5C]/75">
-              {icebergText}
-            </p>
+            <div className="mt-3 space-y-3 text-sm leading-6 text-[#1B3A5C]/75">
+              {icebergText.split(/\n\s*\n/).map((para, i) => (
+                <p key={i}>{para.trim()}</p>
+              ))}
+            </div>
           </div>
           {doc?.icebergPhoto && (
             <div className="overflow-hidden rounded-2xl">
